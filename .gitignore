@@ -1,0 +1,9 @@
+charts/llm-d/charts/
+charts/llm-d/tmp.yaml
+charts/llm-d/temp/
+ct-previous-revision*
+
+chart-dependencies/quickstart/gateway-api-inference-extension/
+
+# misc
+.idea

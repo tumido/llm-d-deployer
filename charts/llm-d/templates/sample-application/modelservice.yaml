@@ -1,0 +1,68 @@
+{{- if .Values.sampleApplication.enabled -}}
+apiVersion: llm-d.ai/v1alpha1
+kind: ModelService
+metadata:
+  name: {{ include "sampleApplication.sanitizedModelName" . }}
+  labels: {{ include "common.labels.standard" $ | nindent 4 }}
+    app.kubernetes.io/component: sample-application
+    {{- if $.Values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" $.Values.commonLabels "context" $ ) | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- if $.Values.commonAnnotations }}
+    {{- include "common.tplvalues.render" ( dict "value" $.Values.commonAnnotations "context" $ ) | nindent 4 }}
+    {{- end }}
+spec:
+  decoupleScaling: false
+  baseConfigMapRef:
+    name: {{ include "modelservice.fullname" . }}-basic-gpu-with-nixl-and-redis-lookup-preset
+  routing:
+    modelName: {{ .Values.sampleApplication.model.modelName }}
+  modelArtifacts:
+    uri: {{ .Values.sampleApplication.model.modelArtifactURI }}
+  decode:
+    replicas: {{ .Values.sampleApplication.decode.replicas }}
+    containers:
+    - name: "vllm"
+      args:
+      - "--served-model-name"
+      - {{ include "sampleApplication.servedModelNames" .}}
+      {{- range .Values.sampleApplication.decode.extraArgs }}
+      - {{ include "common.tplvalues.render" ( dict "value" . "context" $) | quote }}
+      {{- end }}
+      resources: {{ .Values.sampleApplication.resources | toYaml | nindent 8 }}
+      env:
+      {{- if eq (include "sampleApplication.modelArtifactType" . ) "hf" }}
+      - name: HF_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Values.sampleApplication.model.auth.hfToken.name }}
+            key: {{ .Values.sampleApplication.model.auth.hfToken.key }}
+      {{- end }}
+  prefill:
+    replicas: {{ .Values.sampleApplication.prefill.replicas }}
+    containers:
+    - name: "vllm"
+      args:
+      - "--served-model-name"
+      - {{ include "sampleApplication.servedModelNames" .}}
+      {{- range .Values.sampleApplication.prefill.extraArgs }}
+      - {{ include "common.tplvalues.render" ( dict "value" . "context" $) | quote }}
+      {{- end }}
+      resources: {{ .Values.sampleApplication.resources | toYaml | nindent 8 }}
+      env:
+      {{- if eq (include "sampleApplication.modelArtifactType" . ) "hf" }}
+      - name: HF_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Values.sampleApplication.model.auth.hfToken.name }}
+            key: {{ .Values.sampleApplication.model.auth.hfToken.key }}
+      {{- end }}
+  endpointPicker:
+    containers:
+    - name: epp
+      env:
+      {{- if .Values.sampleApplication.endpointPicker.env }}
+      {{- include "common.tplvalues.render" ( dict "value" .Values.sampleApplication.endpointPicker.env "context" $) | nindent 6 }}
+      {{- end }}
+{{- end }}
