@@ -1,19 +1,15 @@
 
-# llm-d Helm Chart
+# `llm-d-deployer`
 
-See [charts/llm-d/README.md](charts/llm-d/README.md).
+This repository includes examples, Helm charts, and release assets for `llm-d`:
 
-## What is llm-d?
-
-See [llm-d website](https://llm-d.ai/) for more information.
-
-## What is this repository?
-
-Our focus is to provide a Helm chart for deploying llm-d on Kubernetes.
-
-## Getting Started
-
-To try out the chart and llm-d look at our [quickstart guide](quickstart/README.md).
+- Quickstarts for experimenting with `llm-d` features:
+  - [Try with minikube](quickstart/README-minikube.md)
+  - [Try on Kubernetes](quickstart/README.md)
+- Helm charts for deploying `llm-d`
+  - See [charts/llm-d/README.md](charts/llm-d/README.md)
+- Release assets for running `llm-d`
+  - See [release notes](https://github.com/llm-d/llm-d-deployer/releases)
 
 ## Contributing
 
