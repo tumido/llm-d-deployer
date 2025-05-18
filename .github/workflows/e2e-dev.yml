@@ -56,11 +56,6 @@ jobs:
           sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
           minikube start --driver=docker --nodes=2
 
-      - name: 🔐 Inject pull secrets
-        run: |
-          mkdir -p $HOME/.config/containers
-          echo "${{ secrets.AUTH_JSON }}" > $HOME/.config/containers/auth.json
-
       - name: 🔐 Inject HF token
         run: echo "HF_TOKEN=${{ secrets.HF_TOKEN }}" >> $GITHUB_ENV
 

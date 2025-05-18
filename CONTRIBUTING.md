@@ -70,16 +70,17 @@ pre-commit run -a
 For every Pull Request submitted, ensure the following steps have been done:
 
 1. [Sign your commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
-2. Run `helm template` on the changes you're making to ensure they are correctly rendered into Kubernetes manifests.
-3. Lint tests has been run for the Chart using the [Chart Testing](https://github.com/helm/chart-testing) tool and the `ct lint` command.
-4. Ensure variables are documented in `values.yaml`. See section [Documenting Variables](#documenting-variables) below.
-5. Update the version number in the [`charts/llm-d/Chart.yaml`](charts/llm-d/Chart.yaml) file using
+2. [Sign-off your commits](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt-code--signoffcode)
+3. Run `helm template` on the changes you're making to ensure they are correctly rendered into Kubernetes manifests.
+4. Lint tests has been run for the Chart using the [Chart Testing](https://github.com/helm/chart-testing) tool and the `ct lint` command.
+5. Ensure variables are documented in `values.yaml`. See section [Documenting Variables](#documenting-variables) below.
+6. Update the version number in the [`charts/llm-d/Chart.yaml`](charts/llm-d/Chart.yaml) file using
    [semantic versioning](https://semver.org/). Follow the `X.Y.Z` format so the nature of the changes is reflected in the
    chart.
    - `X` (major) is incremented for breaking changes,
    - `Y` (minor) is incremented when new features are added without breaking existing functionality,
    - `Z` (patch) is incremented for bug fixes, minor improvements, or non-breaking changes.
-6. Make sure that [pre-commit](https://pre-commit.com/) hook has been run to generate/update the `README.md` documentation. To preview the content, use `helm-docs --dry-run`.
+7. Make sure that [pre-commit](https://pre-commit.com/) hook has been run to generate/update the `README.md` documentation. To preview the content, use `helm-docs --dry-run`.
 
 ### FAQ and Troubleshooting
 
