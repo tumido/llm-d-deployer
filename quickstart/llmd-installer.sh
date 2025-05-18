@@ -433,8 +433,12 @@ install() {
 
   if is_openshift; then
     BASE_OCP_DOMAIN=$(kubectl get ingresscontroller default -n openshift-ingress-operator -o jsonpath='{.status.domain}')
+    OCP_DISABLE_INGRESS_ARGS=(
+      --set ingress.enabled=false
+    )
   else
     BASE_OCP_DOMAIN=""
+    OCP_DISABLE_INGRESS_ARGS=()
   fi
 
   local metrics_enabled="true"
@@ -468,6 +472,7 @@ install() {
     ${DEBUG} \
     --namespace "${NAMESPACE}" \
     "${VALUES_ARGS[@]}" \
+    "${OCP_DISABLE_INGRESS_ARGS[@]}" \
     --set global.imagePullSecrets[0]="${PULL_SECRET_NAME}" \
     --set gateway.kGatewayParameters.proxyUID="${PROXY_UID}" \
     --set ingress.clusterRouterBase="${BASE_OCP_DOMAIN}" \
