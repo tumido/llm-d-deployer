@@ -1,7 +1,7 @@
 
 # llm-d Helm Chart
 
-![Version: 1.0.15](https://img.shields.io/badge/Version-1.0.15-informational?style=flat-square)
+![Version: 1.0.16](https://img.shields.io/badge/Version-1.0.16-informational?style=flat-square)
 ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 llm-d is a Kubernetes-native high-performance distributed LLM inference framework
@@ -22,7 +22,7 @@ llm-d is a Kubernetes-native high-performance distributed LLM inference framewor
 
 ```console
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo add llm-d https://llm-d.github.io/llm-d-deployer
+helm repo add llm-d https://llm-d.ai/llm-d-deployer
 
 helm install my-llm-d llm-d/llm-d
 ```
@@ -56,7 +56,7 @@ The following command can be used to add the chart repository:
 
 ```console
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo add llm-d https://llm-d.github.io/llm-d-deployer
+helm repo add llm-d https://llm-d.ai/llm-d-deployer
 ```
 
 Once the chart has been added, install this chart. However before doing so, please review the default `values.yaml` and adjust as needed.
