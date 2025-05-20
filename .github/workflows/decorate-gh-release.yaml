@@ -23,7 +23,7 @@ jobs:
             const release = await github.rest.repos.getReleaseByTag({ owner, repo, tag });
 
             const WORKFLOW_URL = `https://github.com/${owner}/${repo}/actions/workflows/test.yaml`
-            const BADGE_URL = `https://img.shields.io/github/check-runs/${owner}/${repo}/${tag}?nameFilter=test&label=Test`
+            const BADGE_URL = `https://img.shields.io/github/check-runs/${owner}/${repo}/${tag}?nameFilter=Test%20Latest%20Release&label=Test%20Latest%20Release`
             const BADGE = `[![Released chart test status](${BADGE_URL})](${WORKFLOW_URL})`
 
             await github.rest.repos.updateRelease({ owner, repo, release_id: release.data.id, body: BADGE + "\n\n" + release.data.body });
