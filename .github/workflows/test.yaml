@@ -1,8 +1,7 @@
 name: Test Charts
 
 on:
-  # FIXME: Dangerous! Please revert to pull_request once images are public
-  pull_request_target: # zizmor: ignore[dangerous-triggers]
+  pull_request:
     branches:
       - main
   push:
@@ -22,14 +21,12 @@ jobs:
     # Aligning job name with the OpenShift CI config: https://github.com/openshift/release/blob/master/core-services/prow/02_config/redhat-developer/rhdh-chart/_prowconfig.yaml#L18
     name: Test Latest Release
     runs-on: ubuntu-latest
-    environment: ci
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
           persist-credentials: true
-          ref: ${{ github.event.pull_request.head.sha }}  # FiXME: Remove once reverted to pull_request from pull_request_target
 
       - name: Set up Helm
         uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # renovate: tag=v3.5
@@ -59,22 +56,6 @@ jobs:
           helm repo add ingress-nginx "https://kubernetes.github.io/ingress-nginx"
           helm repo add bitnami "https://charts.bitnami.com/bitnami"
           helm repo update
-
-      # FIXME: Remove once images are public and this workflow is set to run to pull_request event instead of pull_request_target
-      - name: Login to Quay.io
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
-        with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
-
-      # FIXME: Remove once images are public and this workflow is set to run to pull_request event instead of pull_request_target
-      - name: Login to ghcr.io
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
-        with:
-          registry: ghcr.io
-          username: ${{ secrets.GHCR_USERNAME }}
-          password: ${{ secrets.GHCR_PASSWORD }}
 
       - name: Create KIND Cluster
         if: steps.list-changed.outputs.changed == 'true'
@@ -125,11 +106,7 @@ jobs:
       - name: Install prerequisites
         if: steps.list-changed.outputs.changed == 'true'
         shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GHCR_PASSWORD }}
-        run: |
-          git config --global url."https://$GITHUB_TOKEN@github.com".insteadOf https://github.com
-          ./chart-dependencies/ci-deps.sh
+        run: ./chart-dependencies/ci-deps.sh
 
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
