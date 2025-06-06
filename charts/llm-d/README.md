@@ -1,7 +1,7 @@
 
 # llm-d Helm Chart
 
-![Version: 1.0.17](https://img.shields.io/badge/Version-1.0.17-informational?style=flat-square)
+![Version: 1.0.18](https://img.shields.io/badge/Version-1.0.18-informational?style=flat-square)
 ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 llm-d is a Kubernetes-native high-performance distributed LLM inference framework
@@ -286,6 +286,7 @@ Kubernetes: `>= 1.30.0-0`
 | sampleApplication.baseConfigMapRefName | Name of the base configMapRef to use <br /> For the available presets see: `templates/modelservice/presets/` | string | `"basic-gpu-with-nixl-and-redis-lookup-preset"` |
 | sampleApplication.decode.extraArgs | args to add to the decode deployment | list | `[]` |
 | sampleApplication.decode.replicas | number of desired decode replicas | int | `1` |
+| sampleApplication.decode.runtimeClassName | runtimeClassName for the decode pods | string | `""` |
 | sampleApplication.enabled | Enable rendering of sample application resources | bool | `true` |
 | sampleApplication.endpointPicker.env | Apply additional env variables to the endpoint picker deployment <br /> Ref: https://github.com/neuralmagic/llm-d-inference-scheduler/blob/0.0.2/docs/architecture.md | list | `[]` |
 | sampleApplication.inferencePoolPort | InferencePool port configuration | int | `8000` |
@@ -297,6 +298,7 @@ Kubernetes: `>= 1.30.0-0`
 | sampleApplication.model.servedModelNames | Aliases to the Model named vllm will serve with | list | `[]` |
 | sampleApplication.prefill.extraArgs | args to add to the prefill deployment | list | `[]` |
 | sampleApplication.prefill.replicas | number of desired prefill replicas | int | `1` |
+| sampleApplication.prefill.runtimeClassName | runtimeClassName for the prefill pods | string | `""` |
 | sampleApplication.resources | Resource requests/limits <br /> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-requests-and-limits-of-pod-and-container | object | `{"limits":{"nvidia.com/gpu":"1"},"requests":{"nvidia.com/gpu":"1"}}` |
 | test | Helm tests | object | `{"enabled":false,"image":{"imagePullPolicy":"Always","pullSecrets":[],"registry":"quay.io","repository":"curl/curl","tag":"latest"}}` |
 | test.enabled | Enable rendering of helm test resources | bool | `false` |

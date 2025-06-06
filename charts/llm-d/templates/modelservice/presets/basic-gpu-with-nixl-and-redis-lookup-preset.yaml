@@ -43,6 +43,9 @@ data:
           tolerations:
             {{- include "common.tplvalues.render" ( dict "value" .Values.modelservice.decode.tolerations "context" $) | nindent 12 }}
           {{- end }}
+          {{- if .Values.sampleApplication.decode.runtimeClassName }}
+          runtimeClassName: {{ .Values.sampleApplication.decode.runtimeClassName }}
+          {{- end }}
           initContainers:
             - name: routing-proxy
               image: {{ include "modelservice.routingProxyImage" . }}
@@ -174,6 +177,9 @@ data:
           {{- if .Values.modelservice.prefill.tolerations }}
           tolerations:
             {{- include "common.tplvalues.render" ( dict "value" .Values.modelservice.prefill.tolerations "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.sampleApplication.prefill.runtimeClassName }}
+          runtimeClassName: {{ .Values.sampleApplication.prefill.runtimeClassName }}
           {{- end }}
           containers:
             - name: vllm

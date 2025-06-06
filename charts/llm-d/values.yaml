@@ -150,6 +150,8 @@ sampleApplication:
     # @schema
     # -- args to add to the prefill deployment
     extraArgs: []
+    # -- runtimeClassName for the prefill pods
+    runtimeClassName: ""
 
   decode:
     # -- number of desired decode replicas
@@ -161,6 +163,8 @@ sampleApplication:
     # @schema
     # -- args to add to the decode deployment
     extraArgs: []
+    # -- runtimeClassName for the decode pods
+    runtimeClassName: ""
 
   endpointPicker:
 

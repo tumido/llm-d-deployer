@@ -10471,6 +10471,12 @@
                             "description": "number of desired decode replicas",
                             "required": [],
                             "title": "replicas"
+                        },
+                        "runtimeClassName": {
+                            "default": "",
+                            "description": "runtimeClassName for the decode pods",
+                            "required": [],
+                            "title": "runtimeClassName"
                         }
                     },
                     "required": [],
@@ -10688,6 +10694,12 @@
                             "description": "number of desired prefill replicas",
                             "required": [],
                             "title": "replicas"
+                        },
+                        "runtimeClassName": {
+                            "default": "",
+                            "description": "runtimeClassName for the prefill pods",
+                            "required": [],
+                            "title": "runtimeClassName"
                         }
                     },
                     "required": [],
