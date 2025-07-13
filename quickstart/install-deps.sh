@@ -40,7 +40,7 @@ install_pkg() {
 }
 
 # Install base utilities
-for pkg in git jq make curl tar wget; do
+for pkg in git jq make curl tar; do
   if ! command -v "$pkg" &> /dev/null; then
     install_pkg "$pkg"
   fi
@@ -49,13 +49,8 @@ done
 # Install yq (v4+)
 if ! command -v yq &> /dev/null; then
   echo "Installing yq..."
-  if [[ "$OS" == "linux" ]]; then
-    sudo wget -qO /usr/local/bin/yq \
-      https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${ARCH}
-  else  # macOS
-    sudo wget -qO /usr/local/bin/yq \
-      https://github.com/mikefarah/yq/releases/latest/download/yq_darwin_${ARCH}
-  fi
+  sudo curl -sLo /usr/local/bin/yq \
+    "https://github.com/mikefarah/yq/releases/latest/download/yq_${OS}_${ARCH}"
   sudo chmod +x /usr/local/bin/yq
 fi
 
@@ -75,9 +70,9 @@ fi
 # Install Helm
 if ! command -v helm &> /dev/null; then
   echo "Installing Helm..."
-  HELM_VER="v3.17.3"
+  HELM_VER=$(curl -s https://api.github.com/repos/helm/helm/releases/latest | jq -r '.tag_name')
   TARBALL="helm-${HELM_VER}-${OS}-${ARCH}.tar.gz"
-  wget "https://get.helm.sh/${TARBALL}"
+  curl -sLO "https://get.helm.sh/${TARBALL}"
   tar -zxvf "${TARBALL}"
   sudo mv "${OS}-${ARCH}/helm" /usr/local/bin/helm
   rm -rf "${OS}-${ARCH}" "${TARBALL}"
