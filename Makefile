@@ -4,6 +4,11 @@ SHELL := /usr/bin/env bash
 NAMESPACE ?= hc4ai-operator
 CHART ?= charts/llm-d
 
+MS_VERSION      ?= v0.0.15
+EPP_VERSION     ?= v0.1.0
+VLLM_VERSION    ?= 0.0.8
+ROUTING_PROXY_VERSION ?= 0.0.7
+INFERENCE_SIM_VERSION ?= 0.0.4
 
 .PHONY: help
 help: ## Print help
@@ -45,10 +50,39 @@ helm-uninstall: ## Uninstall the Helm release
 
 .Phony: bump-modelservice-crd
 bump-modelservice-crd:
-	git clone git@github.com:llm-d/llm-d-model-service.git
+	git clone git@github.com:llm-d/llm-d-model-service.git -b $(MS_VERSION) --depth=1
 	kustomize build llm-d-model-service/config/crd > charts/llm-d/crds/modelservice-crd.yaml
 	rm -rf llm-d-model-service
 
-.Phony: bump-chart-version
+# Setting SED allows macos users to install GNU sed and use the latter
+# instead of the default BSD sed.
+ifeq ($(shell command -v gsed 2>/dev/null),)
+    SED ?= $(shell command -v sed)
+else
+    SED ?= $(shell command -v gsed)
+endif
+ifeq ($(shell ${SED} --version 2>&1 | grep -q GNU; echo $$?),1)
+    $(error !!! GNU sed is required. If on OS X, use 'brew install gnu-sed'.)
+endif
+
+VALUES_FILE := charts/llm-d/values.yaml
+
+.Phony: bump-image-tags
+bump-image-tags:
+	@echo "Updating image tags in $(VALUES_FILE)..."
+	# Update modelservice.image.tag
+	$(SED) -i '/^modelservice:/,/^[a-zA-Z]/ { /^  image:/,/^  [a-zA-Z]/ { s/^\(    tag: \).*$$/\1"$(MS_VERSION)"/; } }' $(VALUES_FILE)
+	# Update modelservice.epp.image.tag
+	$(SED) -i '/^modelservice:/,/^[a-zA-Z]/ { /^  epp:/,/^  [a-zA-Z]/ { /^    image:/,/^    [a-zA-Z]/ { s/^\(      tag: \).*$$/\1"$(EPP_VERSION)"/; } } }' $(VALUES_FILE)
+	# Update modelservice.vllm.image.tag
+	$(SED) -i '/^modelservice:/,/^[a-zA-Z]/ { /^  vllm:/,/^  [a-zA-Z]/ { /^    image:/,/^    [a-zA-Z]/ { s/^\(      tag: \).*$$/\1"$(VLLM_VERSION)"/; } } }' $(VALUES_FILE)
+	# Update modelservice.routingProxy.image.tag
+	$(SED) -i '/^modelservice:/,/^[a-zA-Z]/ { /^  routingProxy:/,/^  [a-zA-Z]/ { /^    image:/,/^    [a-zA-Z]/ { s/^\(      tag: \).*$$/\1"$(ROUTING_PROXY_VERSION)"/; } } }' $(VALUES_FILE)
+	# Update modelservice.inferenceSimulator.image.tag
+	$(SED) -i '/^modelservice:/,/^[a-zA-Z]/ { /^  inferenceSimulator:/,/^  [a-zA-Z]/ { /^    image:/,/^    [a-zA-Z]/ { s/^\(      tag: \).*$$/\1"$(INFERENCE_SIM_VERSION)"/; } } }' $(VALUES_FILE)
+	@echo "Image tags updated successfully!"
+
+.PHONY: bump-chart-version
+# Bump Helm chart version, usage: make bump-chart-version bump_type=[patch|minor|major]
 bump-chart-version:
-	helpers/scripts/increment-chart-version.sh
+	helpers/scripts/increment-chart-version.sh $(bump_type)
